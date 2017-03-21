@@ -1,0 +1,22 @@
+{
+  "name": "jvca",
+  "version": "1.0.0",
+  "description": "jvn aaa",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://mtsue@bitbucket.org/mtsue/jvca.git"
+  },
+  "keywords": [
+    "mtsue"
+  ],
+  "author": "mtsue",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.5",
+    "cheerio-httpcli": "^0.6.11"
+  }
+}
