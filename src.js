@@ -4,6 +4,7 @@
 const client = require('cheerio-httpcli');
 const async = require('async');
 const fs = require('fs');
+const request = require('request');
 
 /* URL */
 const mainURL = 'http://jvndb.jvn.jp';
@@ -77,18 +78,10 @@ async.series(getURL,function(callback){
             accessDetail[i].then(function(data){
                 var $ = data.$;
 
-                $('.vuln_table_clase').each(function(){
-                    if($(this).children('tr').eq(0).text().trim() == '[English]'){
-                        ids.push($(this).children('tr').eq(1).text().trim());
-                        products.push($(this).children('tr').eq(10).text().trim());
-                        problems.push($(this).children('tr').eq(4).text().trim());
-                    }else{
-                        ids.push($(this).children('tr').eq(0).text().trim());
-                        products.push($(this).children('tr').eq(9).text().trim());
-                        problems.push($(this).children('tr').eq(3).text().trim());
-                    }
-                });
-                dates.push($('.vuln_table_clase_footer').children('tr').eq(3).children('td').eq(1).text().trim());
+                ids.push($('.vuln_table_clase_td_header').eq(0).parent('tr').prev().prev().text().trim());
+                problems.push($('.vuln_table_clase_td_header').eq(0).parent('tr').next().text().trim());
+                products.push($('.vuln_table_clase_td_header').eq(2).parent('tr').next().next().text().replace(/\t/g, '').trim());
+                dates.push($('.vuln_table_clase_date_header_td').eq(2).next().text().trim());
 
                 callback();
             });
@@ -113,6 +106,31 @@ async.series(getURL,function(callback){
                 });
             }
         }
-        async.series(writeFile);
+        async.series(writeFile, function(callback){
+
+            var formdata = [];
+            var options = [];
+            var writeSheet = [];
+            for(let i = 0; i < ids.length; i++){
+                formdata[i] = {
+                    id: ids[ids.length - (i+1)],
+                    product: products[products.length - (i+1)],
+                    problem: problems[problems.length - (i+1)],
+                    url: detailURL[detailURL.length - (i+1)],
+                    date: dates[dates.length - (i+1)]
+                };
+                options[i] = {
+                    url: 'https://script.google.com/macros/s/AKfycbyg8DgXgjn3vzulpkZIs8jFRZcx8Z7EMY8mzyva2lP9mQMz_14/exec',
+                    form: formdata[i]
+                }
+                writeSheet[i] = function(callback){
+                    request.post(options[i], function(err, res, body){
+                        callback();
+                    });
+                }
+            }
+
+            async.series(writeSheet);
+        });
     });
 });
