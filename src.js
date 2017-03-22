@@ -102,13 +102,13 @@ async.series(getURL,function(callback){
         var writeFile = [];
         writeFile[0] = function(callback){
             fs.writeFile(filename, '', function(hoge){
-                console.log('create' + filename);
+                console.log('create: ' + filename);
                 callback();
             });
         }
         for(let i = 1; i < ids.length; i++){
             writeFile[i] = function(callback){
-                fs.appendFile(filename, '"' + ids[i] + '"' + ','  + ',' + '"' + products[i] + '"' + ',' + '"' + problems[i] + '"' + ',' + '起票無' + ',' + '"' + '製品と直接的な関係が無いと思われる' + '"' + ',' + '"' + detailURL[i] +'"' + ',' + '"' + dates[i] + '"' + '\n', function(hoge){
+                fs.appendFile(filename, '"' + ids[i] + '"' + ','  + ',' + '"' + products[i] + '"' + ',' + '"' + problems[i].replace(/"/g, '\'') + '"' + ',' + '起票無' + ',' + '"' + '製品と直接的な関係が無いと思われる' + '"' + ',' + '"' + detailURL[i] +'"' + ',' + '"' + dates[i] + '"' + '\n', function(hoge){
                     callback();
                 });
             }
