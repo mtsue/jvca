@@ -59,28 +59,28 @@ for(let i = 0; i < access.length; i++){
     }
 }
 
-var accessDetail = [];
+var accessDetail = []; // アクセス関数
 /* getURL async処理 */
 async.series(getURL,function(callback){
 
     for(let i = 0; i < detailURL.length; i++){
         accessDetail[i] = client.fetch(detailURL[i]);
     }
-    var getDetail = [];
+    var getDetail = []; // アクセス関数
 
-    var ids = [];
-    var products = [];
-    var problems = [];
-    var dates = [];
+    var ids = []; // JVNID
+    var products = []; // 製品
+    var problems = []; // 問題
+    var dates = []; // 最終更新日
 
     for(let i = 0; i < accessDetail.length; i++){
         getDetail[i] = function(callback){
             accessDetail[i].then(function(data){
                 var $ = data.$;
 
-                ids.push($('.vuln_table_clase_td_header').eq(0).parent('tr').prev().prev().text().trim());
-                problems.push($('.vuln_table_clase_td_header').eq(0).parent('tr').next().text().trim());
-                products.push($('.vuln_table_clase_td_header').eq(2).parent('tr').next().next().text().replace(/\t/g, '').trim());
+                ids.push($('.vuln_table_clase_td_header').eq(0).parent().prev().prev().text().trim());
+                problems.push($('.vuln_table_clase_td_header').eq(0).parent().next().text().trim());
+                products.push($('.vuln_table_clase_td_header').eq(2).parent().next().next().text().replace(/\t/g, '').trim());
                 dates.push($('.vuln_table_clase_date_header_td').eq(2).next().text().trim());
 
                 callback();
@@ -91,14 +91,18 @@ async.series(getURL,function(callback){
     /* getDetail async処理 */
     async.series(getDetail, function(callback){
 
-        var filename = 'output' + Math.random() + '.csv';
-        var writeFile = [];
+        var filename = 'output' + Math.random() + '.csv'; // 出力ファイル名
+        var writeFile = []; // 書き込み関数
+
+        // ファイル作成
         writeFile[0] = function(callback){
             fs.writeFile(filename, '', function(hoge){
                 console.log('create: ' + filename);
                 callback();
             });
         }
+
+        // ファイル書き込み
         for(let i = 1; i < ids.length; i++){
             writeFile[i] = function(callback){
                 fs.appendFile(filename, '"' + ids[i] + '"' + ','  + ',' + '"' + products[i] + '"' + ',' + '"' + problems[i].replace(/"/g, '\'') + '"' + ',' + '起票無' + ',' + '"' + '製品と直接的な関係が無いと思われる' + '"' + ',' + '"' + detailURL[i] +'"' + ',' + '"' + dates[i] + '"' + '\n', function(hoge){
@@ -106,11 +110,13 @@ async.series(getURL,function(callback){
                 });
             }
         }
+
+        // writeFile async処理
         async.series(writeFile, function(callback){
 
-            var formdata = [];
-            var options = [];
-            var writeSheet = [];
+            var formdata = []; // POSTデータ
+            var options = []; // POST先
+            var writeSheet = []; // 書き込み関数
             for(let i = 0; i < ids.length; i++){
                 formdata[i] = {
                     id: ids[ids.length - (i+1)],
@@ -130,6 +136,7 @@ async.series(getURL,function(callback){
                 }
             }
 
+            // writeSheet async処理
             async.series(writeSheet);
         });
     });
