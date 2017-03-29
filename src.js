@@ -126,7 +126,7 @@ async.series(getURL,function(callback){
                     date: dates[dates.length - (i+1)]
                 };
                 options[i] = {
-                    url: 'https://script.google.com/macros/s/AKfycbyg8DgXgjn3vzulpkZIs8jFRZcx8Z7EMY8mzyva2lP9mQMz_14/exec',
+                    url: 'XXXXX',
                     form: formdata[i]
                 }
                 writeSheet[i] = function(callback){
