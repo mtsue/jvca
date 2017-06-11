@@ -9,6 +9,7 @@ const request = require('request');
 /* URL */
 const mainURL = 'http://jvndb.jvn.jp';
 const searchURL = mainURL + '/search/index.php';
+const sheetURL = 'XXXXX';
 
 /* 検索ページアクセス */
 var param = []; // URLパラメータ
@@ -126,7 +127,7 @@ async.series(getURL,function(callback){
                     date: dates[dates.length - (i+1)]
                 };
                 options[i] = {
-                    url: 'XXXXX',
+                    url: sheetURL,
                     form: formdata[i]
                 }
                 writeSheet[i] = function(callback){
