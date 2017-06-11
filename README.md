@@ -2,7 +2,18 @@
 
 ## Description ##
 http://jvndb.jvn.jp のデータ持ってきてcsvファイルに書き込む
+また、GoogleAppsScriptを使用して GoogleSpreadSheet に自動書込
 
 ## How to use ##
-`[user@comp jvca]$ npm install`  
-`[user@comp jvca]$ npm start`
+### 下準備 ###
+1. Googleスプレッドシートを開き、`ツール -> スクリプトエディタ` からスクリプトエディタを開く
+2. code.gs の内容をコピペ
+3. `シートID`と`シート名`をそれぞれ `XXXXX` となってる部分に入力
+4. `公開 -> ウェブアプリケーションとして導入`
+5. `次のユーザーとしてアプリケーションを実行` から、 `自分` を選択
+6. `アプリケーションにアクセスできるユーザー` を `全員（匿名ユーザーを含む）` を選択
+7. `更新` を押す
+
+### 実行 ###
+1. `$ npm install`  
+2. `$ npm start`
